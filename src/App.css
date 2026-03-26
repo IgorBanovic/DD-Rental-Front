@@ -277,3 +277,163 @@ body {
   color: #333;
   font-weight: 500;
 }
+
+
+.auth-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 70vh;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 450px;
+  background: white;
+  padding: 30px;
+  border-radius: 14px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+}
+
+.auth-title {
+  font-size: 32px;
+  color: #111;
+  margin-bottom: 8px;
+}
+
+.auth-subtitle {
+  font-size: 16px;
+  color: #666;
+  margin-bottom: 24px;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.auth-label {
+  font-size: 15px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8px;
+  margin-top: 12px;
+}
+
+.auth-input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  font-size: 15px;
+  outline: none;
+}
+
+.auth-input:focus {
+  border-color: #111;
+}
+
+.auth-button {
+  margin-top: 20px;
+  width: 100%;
+  padding: 13px;
+  border: none;
+  border-radius: 10px;
+  background-color: #111;
+  color: white;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.auth-button:hover {
+  opacity: 0.9;
+}
+
+.dashboard {
+  padding: 20px 0;
+}
+
+.dashboard__title {
+  font-size: 36px;
+  color: #111;
+  margin-bottom: 10px;
+}
+
+.dashboard__subtitle {
+  font-size: 17px;
+  color: #555;
+  margin-bottom: 30px;
+}
+
+.dashboard__list {
+  display: grid;
+  gap: 20px;
+}
+
+.reservation-card {
+  background: white;
+  border-radius: 14px;
+  padding: 22px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+}
+
+.reservation-card__top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.reservation-card__car {
+  font-size: 24px;
+  color: #111;
+}
+
+.reservation-card__status {
+  background: #eef3f8;
+  color: #111;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.reservation-card__text {
+  font-size: 16px;
+  color: #555;
+  margin-bottom: 8px;
+}
+
+.reservation-card__price {
+  font-size: 18px;
+  font-weight: 700;
+  color: #111;
+  margin-top: 8px;
+  margin-bottom: 18px;
+}
+
+.reservation-card__actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.reservation-card__button {
+  padding: 10px 18px;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.reservation-card__button--secondary {
+  background: #111;
+  color: white;
+}
+
+.reservation-card__button--danger {
+  background: #d9534f;
+  color: white;
+}
