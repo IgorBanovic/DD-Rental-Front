@@ -1,10 +1,16 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import useAuthStore from "../store/authStore";
 
 function Login() {
     const [formData, setFormData] = useState({
         email: "",
         password: "",
     });
+
+    const login = useAuthStore((state) => state.login);
+    const navigate = useNavigate();
+
 
     const handleChange = (e) => {
         setFormData((prev) => ({
@@ -21,7 +27,15 @@ function Login() {
             return;
         }
 
-        alert("Login submitted");
+        const fakeUser = {
+            name: "Bernard",
+            email: formData.email,
+        };
+
+        const fakeToken = "sample_token_123";
+
+        login(fakeUser, fakeToken);
+        navigate("/dashboard");
     };
 
     return (

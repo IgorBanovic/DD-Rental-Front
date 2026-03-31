@@ -1,7 +1,17 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import "./Navbar.css";
+import useAuthStore from "../store/authStore";
 
 function Navbar() {
+
+    const { user, isAuthenticated, logout } = useAuthStore();
+    const navigate = useNavigate();
+
+    const handleLogout = () => {
+        logout();
+        navigate("/");
+    }
+
     return (
         <nav className="navbar">
             <div className="navbar__logo">
@@ -29,32 +39,53 @@ function Navbar() {
                     Vehicles
                 </NavLink>
 
-                <NavLink
-                    to="/login"
-                    className={({ isActive }) =>
-                        isActive ? "nav-link active-link" : "nav-link"
-                    }
-                >
-                    Login
-                </NavLink>
+                {isAuthenticated ? (
+                    <>
+                        <span className="nav-user">Hi, {user?.name}</span>
 
-                <NavLink
-                    to="/register"
-                    className={({ isActive }) =>
-                        isActive ? "nav-link active-link" : "nav-link"
-                    }
-                >
-                    Register
-                </NavLink>
+                        <NavLink
+                            to="/dashboard"
+                            className={({ isActive }) =>
+                                isActive ? "nav-link active-link" : "nav-link"
+                            }
+                        >
+                            Dashboard
+                        </NavLink>
 
-                <NavLink
-                    to="/dashboard"
-                    className={({ isActive }) =>
-                        isActive ? "nav-link active-link" : "nav-link"
-                    }
-                >
-                    Dashboard
-                </NavLink>
+                        <NavLink
+                            to="/profile"
+                            className={({ isActive }) =>
+                                isActive ? "nav-link active-link" : "nav-link"
+                            }
+                        >
+                            Profile
+                        </NavLink>
+
+                        <button className="logout-btn" onClick={logout}>
+                            Logout
+                        </button>
+                    </>
+                ) : (
+                    <>
+                        <NavLink
+                            to="/login"
+                            className={({ isActive }) =>
+                                isActive ? "nav-link active-link" : "nav-link"
+                            }
+                        >
+                            Login
+                        </NavLink>
+
+                        <NavLink
+                            to="/register"
+                            className={({ isActive }) =>
+                                isActive ? "nav-link active-link" : "nav-link"
+                            }
+                        >
+                            Register
+                        </NavLink>
+                    </>
+                )}
             </div>
         </nav>
     );

@@ -37,3 +37,21 @@
     color: #4da8ff;
     font-weight: 600;
 }
+
+.nav-user {
+    color: white;
+    font-size: 15px;
+}
+
+.logout-btn {
+    background: transparent;
+    border: 1px solid #fff;
+    color: white;
+    padding: 8px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.logout-btn:hover {
+    background: rgba(255, 255, 255, 0.08);
+}
