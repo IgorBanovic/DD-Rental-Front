@@ -22,12 +22,7 @@ function Profile() {
                         <span className="profile-value">{user?.email || "Not available"}</span>
                     </div>
 
-                    <div className="profile-row">
-                        <span className="profile-label">Token</span>
-                        <span className="profile-value">
-                            {token ? `${token.slice(0, 12)}...` : "No token"}
-                        </span>
-                    </div>
+
                 </div>
 
                 <button className="profile-button">Edit Profile</button>

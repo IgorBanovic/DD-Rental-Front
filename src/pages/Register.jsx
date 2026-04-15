@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { useMutation } from "@tanstack/react-query";
+import { registerUser } from "../api/auth";
 
 function Register() {
     const [formData, setFormData] = useState({
@@ -6,6 +8,24 @@ function Register() {
         email: "",
         password: "",
         confirmPassword: "",
+    });
+
+    const mutation = useMutation({
+        mutationFn: registerUser,
+        onSuccess: (data) => {
+
+            setFormData({
+                name: "",
+                email: "",
+                password: "",
+                confirmPassword: "",
+            });
+
+            console.log("Registered user:", data);
+        },
+        onError: (error) => {
+            alert(error.message || "Something went wrong");
+        },
     });
 
     const handleChange = (e) => {
@@ -33,7 +53,12 @@ function Register() {
             return;
         }
 
-        alert("Registration submitted");
+        mutation.mutate({
+            name: formData.name,
+            email: formData.email,
+            password: formData.password,
+            password_confirmation: formData.confirmPassword,
+        });
     };
 
     return (
@@ -83,9 +108,17 @@ function Register() {
                         onChange={handleChange}
                     />
 
-                    <button type="submit" className="auth-button">
-                        Register
+                    <button type="submit"
+                        className="auth-button"
+                        disabled={mutation.isPending}
+                    >
+                        {mutation.isPending ? "Registering..." : "Register"}
                     </button>
+                    {mutation.isError && (
+                        <p style={{ color: "red", marginTop: "10px" }}>
+                            {mutation.error.message}
+                        </p>
+                    )}
                 </form>
             </div>
         </section>

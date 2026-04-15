@@ -1,16 +1,24 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import "./Navbar.css";
 import useAuthStore from "../store/authStore";
+import { useMutation } from "@tanstack/react-query";
+import { logoutUser } from "../api/auth";
 
 function Navbar() {
-
     const { user, isAuthenticated, logout } = useAuthStore();
     const navigate = useNavigate();
 
-    const handleLogout = () => {
-        logout();
-        navigate("/");
-    }
+    const logoutMutation = useMutation({
+        mutationFn: logoutUser,
+        onSuccess: () => {
+            logout();
+            navigate("/");
+        },
+        onError: () => {
+            logout();
+            navigate("/");
+        },
+    });
 
     return (
         <nav className="navbar">
@@ -55,14 +63,19 @@ function Navbar() {
                         <NavLink
                             to="/profile"
                             className={({ isActive }) =>
+
                                 isActive ? "nav-link active-link" : "nav-link"
                             }
                         >
                             Profile
                         </NavLink>
 
-                        <button className="logout-btn" onClick={logout}>
-                            Logout
+                        <button
+                            className="logout-btn"
+                            onClick={() => logoutMutation.mutate()}
+                            disabled={logoutMutation.isPending}
+                        >
+                            {logoutMutation.isPending ? "Logging out..." : "Logout"}
                         </button>
                     </>
                 ) : (

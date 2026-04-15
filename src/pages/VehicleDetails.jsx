@@ -1,60 +1,94 @@
 import { useParams } from "react-router-dom";
 import { useState } from "react";
-
-const cars = [
-    {
-        id: 1,
-        name: "BMW 3 Series",
-        year: 2022,
-        price: 65,
-        image: "https://www.alloyhub.com/wp-content/uploads/2021/10/e90-600x600.png",
-        description: "A comfortable and stylish sedan, perfect for city and business trips.",
-    },
-    {
-        id: 2,
-        name: "Audi A4",
-        year: 2021,
-        price: 60,
-        image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSELwrPOWSU0tOwZQFS7653dCuPVol_njvNXA&s",
-        description: "A premium vehicle with smooth handling and modern features.",
-    },
-    {
-        id: 3,
-        name: "Mercedes C-Class",
-        year: 2023,
-        price: 75,
-        image: "https://braybrooks.co.uk/wp-content/uploads/2015/02/c-class-205-e1586175998660.jpg",
-        description: "A luxury car that offers comfort, performance, and elegance.",
-    },
-];
+import { useQuery } from "@tanstack/react-query";
+import { getCar } from "../api/cars";
+import { useMutation } from "@tanstack/react-query";
+import { createReservation } from "../api/reservations";
+import useAuthStore from "../store/authStore";
+// import "../components/VehicleCard";
 
 function VehicleDetails() {
     const { id } = useParams();
     const [pickupDate, setPickupDate] = useState("");
     const [returnDate, setReturnDate] = useState("");
 
-    const car = cars.find((item) => item.id === Number(id));
+    const user = useAuthStore((state) => state.user);
+    console.log("USER IN VEHICLE DETAILS:", user);
 
-    const pickup = new Date(pickupDate);
-    const dropoff = new Date(returnDate);
+    const { data, isLoading, isError, error } = useQuery({
+        queryKey: ["car", id],
+        queryFn: () => getCar(id),
+        enabled: !!id,
+    });
 
-    const timeDifference = dropoff - pickup;
-    const totalDays = timeDifference > 0 ? Math.ceil(timeDifference / (1000 * 60 * 60 * 24)) : 0;
-    const totalPrice = totalDays * car.price;
+    const reservationMutation = useMutation({
+        mutationFn: createReservation,
+        onSuccess: () => {
+            alert("Reservation successful!");
+            setPickupDate("");
+            setReturnDate("");
+        },
+        onError: (err) => {
+            alert(`Reservation failed: ${err.message}`);
+        },
+    });
+
+    const rawCar = data?.data?.car || data?.data || data;
+
+    const car = rawCar
+        ? {
+            ...rawCar,
+            image: `http://127.0.0.1:8000/storage/${rawCar.image}`,
+        }
+        : null;
+
+
+    if (isLoading) {
+        return <p>Loading vehicle...</p>;
+    }
+
+    if (isError) {
+        return <p style={{ color: "red" }}>{error.message}</p>;
+    }
 
     if (!car) {
         return <h1>Vehicle not found</h1>;
     }
 
+    const pickup = pickupDate ? new Date(pickupDate) : null;
+    const dropoff = returnDate ? new Date(returnDate) : null;
+
+    const timeDifference =
+        pickup && dropoff ? dropoff - pickup : 0;
+
+    const totalDays =
+        timeDifference > 0
+            ? Math.ceil(timeDifference / (1000 * 60 * 60 * 24))
+            : 0;
+
+    const totalPrice = totalDays * Number(car.price || 0);
+
     const handleReservation = (e) => {
         e.preventDefault();
+
+        console.log("USER BEFORE RESERVATION:", user);
 
         if (!pickupDate || !returnDate) {
             alert("Please select both dates.");
             return;
         }
 
-        alert(`Reservation requested for ${car.name}`);
+        if (!user?.id) {
+            alert("You must be logged in to make a reservation.");
+            return;
+        }
+
+        reservationMutation.mutate({
+            user_id: user.id,
+            car_id: car.id,
+            start_date: pickupDate,
+            end_date: returnDate,
+        });
     };
 
     return (
@@ -89,14 +123,17 @@ function VehicleDetails() {
                         value={returnDate}
                         onChange={(e) => setReturnDate(e.target.value)}
                     />
+
                     {totalDays > 0 && (
                         <div className="reservation-summary">
                             <p>Total days: {totalDays}</p>
                             <p>Total price: {totalPrice} €</p>
                         </div>
                     )}
-                    <button type="submit" className="reservation-form__button">
-                        Confirm Reservation
+
+                    <button type="submit" className="reservation-form__button"
+                        disabled={reservationMutation.isPending}>
+                        {reservationMutation.isPending ? "Creating reservation..." : "Confirm Reservation"}
                     </button>
                 </form>
             </div>

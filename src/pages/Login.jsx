@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useMutation } from "@tanstack/react-query";
 import useAuthStore from "../store/authStore";
+import { loginUser } from "../api/auth";
 
 function Login() {
     const [formData, setFormData] = useState({
@@ -11,6 +13,16 @@ function Login() {
     const login = useAuthStore((state) => state.login);
     const navigate = useNavigate();
 
+    const mutation = useMutation({
+        mutationFn: loginUser,
+        onSuccess: (data) => {
+            login(data.user, data.token);
+            navigate("/dashboard");
+        },
+        onError: (error) => {
+            alert(error.message || "Login failed");
+        },
+    });
 
     const handleChange = (e) => {
         setFormData((prev) => ({
@@ -27,15 +39,10 @@ function Login() {
             return;
         }
 
-        const fakeUser = {
-            name: "Bernard",
+        mutation.mutate({
             email: formData.email,
-        };
-
-        const fakeToken = "sample_token_123";
-
-        login(fakeUser, fakeToken);
-        navigate("/dashboard");
+            password: formData.password,
+        });
     };
 
     return (
@@ -65,9 +72,23 @@ function Login() {
                         onChange={handleChange}
                     />
 
-                    <button type="submit" className="auth-button">
-                        Login
+
+                    <button
+                        type="submit"
+                        className="auth-button"
+                        disabled={mutation.isPending}
+                    >
+                        {mutation.isPending ? "Logging in..." : "Login"}
                     </button>
+
+                    <p className="auth-subtitle">Forgot your password? Click Here!</p>
+
+
+                    {mutation.isError && (
+                        <p style={{ color: "red", marginTop: "10px" }}>
+                            {mutation.error.message}
+                        </p>
+                    )}
                 </form>
             </div>
         </section>

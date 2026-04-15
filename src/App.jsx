@@ -10,9 +10,6 @@ import Vehicles from './pages/Vehicles'
 import Dashboard from './pages/Dashboard'
 import VehicleDetails from './pages/VehicleDetails'
 import Profile from './pages/Profile'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
 import './App.css'
 
 function App() {
@@ -56,6 +53,7 @@ function App() {
             </PrivateRoute>
           }
         />
+
       </Routes>
     </BrowserRouter>
   )
